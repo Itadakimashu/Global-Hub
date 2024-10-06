@@ -9,7 +9,6 @@ public class App {
         User u3 = new User("raiyan","1234");
         GlobalHub.create_message(u2,"hello Fardin");
         GlobalHub.create_message(u1,"hey Nayer!");
-        GlobalHub.create_message(u3,"I am gay-_-");
 
         GlobalHub.print_messages();
 
