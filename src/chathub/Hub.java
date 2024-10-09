@@ -4,6 +4,10 @@ public class Hub {
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Message> messages = new ArrayList<Message>();
 
+    public ArrayList<Message> get_messages(){
+        return this.messages;
+    }
+
     private void add_user(User User){
         this.users.add(User);
     }
@@ -21,6 +25,18 @@ public class Hub {
         Message msg = new Message(user,message);
         this.add_message(msg);
     }
+
+    public User authenticate(String username, String password){
+        for (User u : this.users){
+            if (u.get_username().equals(username) && u.check_password(password)){
+                return u;
+            }
+        }
+        return null;
+    }
+
+    
+
 
     public void print_user(){
         for (User u : this.users){

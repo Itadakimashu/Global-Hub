@@ -17,4 +17,7 @@ public class User {
         //validate username and add a profile in future
         return new User(username, password);
     }
+    public boolean check_password(String password){
+        return this.password.equals(password);
+    }
 }
