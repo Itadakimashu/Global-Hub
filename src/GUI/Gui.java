@@ -13,7 +13,7 @@ public class Gui{
     public User user;
     public User login_user(Hub hub) {
         user = null;
-        JDialog loginDialog = new JDialog((Frame) null, "Login", true);
+        JDialog loginDialog = new JDialog((Frame) null, "Global Hub | Login", true);
         loginDialog.setSize(300, 200);
         loginDialog.setLocationRelativeTo(null);
         loginDialog.setLayout(new GridBagLayout());
@@ -73,7 +73,7 @@ public class Gui{
 
     public User hub_view(Hub hub, User currentUser) {
         user = currentUser;
-        JDialog hubDialog = new JDialog((Frame) null, "Hub", true);
+        JDialog hubDialog = new JDialog((Frame) null, "Global Hub | Welcome " + user.get_username(), true);
         hubDialog.setSize(400, 300);
         hubDialog.setLocationRelativeTo(null);
 
@@ -88,33 +88,34 @@ public class Gui{
 
     
         for (Message m : hub.get_messages()) {
-            messageArea.append(m.user.get_username() + " : " + m.message + "\n");
-            messageArea.append("\n");
+            messageArea.append(m.user.get_username() + " : " + m.message + "\n\n");            
         }
-        messageArea.setCaretPosition(messageArea.getDocument().getLength()); // Scroll to the bottom
-
+        
         // Create a thread to continuously update the message area
         new Thread(() -> {
             int lastMessageCount = hub.get_messages().size();
             while (true) {
-            int currentMessageCount = hub.get_messages().size();
-            if (currentMessageCount > lastMessageCount) {
-                for (int i = lastMessageCount; i < currentMessageCount; i++) {
-                Message m = hub.get_messages().get(i);
-                messageArea.append(m.user.get_username() + " : " + m.message + "\n");
-                messageArea.append("\n");
+                int currentMessageCount = hub.get_messages().size();
+                if (currentMessageCount > lastMessageCount) {
+                    for (int i = lastMessageCount; i < currentMessageCount; i++) {
+                        Message m = hub.get_messages().get(i);
+                        messageArea.append(m.user.get_username() + " : " + m.message + "\n");
+                        messageArea.append("\n");
+                    }
+                    lastMessageCount = currentMessageCount;
+                    messageArea.setCaretPosition(messageArea.getDocument().getLength()); // Scroll to the bottom
                 }
-                lastMessageCount = currentMessageCount;
-                messageArea.setCaretPosition(messageArea.getDocument().getLength()); // Scroll to the bottom
-            }
-            try {
-                Thread.sleep(1000); // Update every second
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+                try {
+                    Thread.sleep(1000); // Update every second
+                } 
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
-
+        messageArea.setCaretPosition(messageArea.getDocument().getLength()); // Scroll to the bottom
+        
         // Add action listener to the send button
         sendButton.addActionListener(new ActionListener() {
             @Override
