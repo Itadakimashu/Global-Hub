@@ -4,12 +4,11 @@ import GUI.*;
 public class App {
     public static String state = "login";
     public static void main(String[] args) {
-        Hub GlobalHub = Hub.load_chats();
-
+        Hub GlobalHub = new Hub();
+        GlobalHub.load();
         Gui gui = new Gui();
 
         User currentUser = null;
-
         while(true){
             switch (state) {
                 case "login":

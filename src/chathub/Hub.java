@@ -8,8 +8,13 @@ public class Hub implements Serializable{
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Message> messages = new ArrayList<Message>();
 
+    //getter setter
     public ArrayList<Message> get_messages(){
         return this.messages;
+    }
+
+    public ArrayList<User> get_users(){
+        return this.users;
     }
 
     private void add_user(User User){
@@ -19,17 +24,18 @@ public class Hub implements Serializable{
         this.messages.add(msg);
     }
 
+    //methods
     public void create_user(String username, String password){
         User u = User.create_user(username,password);
         this.add_user(u);
-        this.save_chats();
+        this.save();
     }
 
     public void create_message(User user, String message){
         //check if the user is in the users arraylist in future
         Message msg = new Message(user,message);
         this.add_message(msg);
-        this.save_chats();
+        this.save();
     }
 
     public User authenticate(String username, String password){
@@ -41,7 +47,7 @@ public class Hub implements Serializable{
         return null;
     }
 
-    public void save_chats(){
+    public void save(){
         try {
             FileOutputStream fos = new FileOutputStream(databaseFile,false);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -54,39 +60,45 @@ public class Hub implements Serializable{
         catch (IOException e) {
             System.out.println("Error saving chats");
             e.printStackTrace();
-        }
 
+        }
     }
 
-    public static Hub load_chats(){
+    public void load() {
         try {
             FileInputStream fis = new FileInputStream(databaseFile);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Hub hub = (Hub) ois.readObject();
             ois.close();
             fis.close();
-            System.out.println("Chats loaded");
-            return hub;
+            if (hub != null) {
+                this.users = hub.get_users();
+                this.messages = hub.get_messages();
+            }
+            // System.out.println("Chats loaded");
         } 
         catch (IOException | ClassNotFoundException e) {
+
+            //create the file if the file does not exist
             if (e instanceof FileNotFoundException) {
                 try {
                     File file = new File(databaseFile);
                     file.createNewFile();
                     System.out.println("Database file created");
-                    return new Hub();
                 } catch (IOException ioException) {
                     System.out.println("Error creating database file");
                     ioException.printStackTrace();
-                }
+                }   
             }
-            System.out.println("Error loading chats");
-            e.printStackTrace();
-            return null;
+            else if (e instanceof EOFException) {
+                System.out.println("Database file is empty, no data to load");
+            } 
+            else {
+                System.out.println("Error loading chats");
+                e.printStackTrace();
+            }
         }
     }
-
-    
 
     //for testing - delete later
     public void print_user(){
