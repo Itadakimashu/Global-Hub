@@ -70,7 +70,6 @@ public class Gui{
         return user;
     }
 
-
     public User hub_view(Hub hub, User currentUser) {
         user = currentUser;
         JDialog hubDialog = new JDialog((Frame) null, "Global Hub | Welcome " + user.get_username(), true);
@@ -106,7 +105,8 @@ public class Gui{
                 if (currentMessageCount > lastMessageCount) {
                     for (int i = lastMessageCount; i < currentMessageCount; i++) {
                         Message m = hub.get_messages().get(i);
-                        messageArea.append(m.user.get_username() + " : " + m.message + "\n");
+                        String username = m.user.get_username().equals(currentUser.get_username()) ? "You: " : m.user.get_username();
+                        messageArea.append(username + " : " + m.message + "\n");
                         messageArea.append("\n");
                     }
                     lastMessageCount = currentMessageCount;
@@ -169,6 +169,68 @@ public class Gui{
         
     }
     
+
+    public void register_view(Hub hub) {
+        user = null;
+        JDialog registerDialog = new JDialog((Frame) null, "Global Hub | Register", true);
+        registerDialog.setSize(300, 200);
+        registerDialog.setLocationRelativeTo(null);
+        registerDialog.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        registerDialog.add(usernameLabel, gbc);
+
+        JTextField usernameField = new JTextField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        registerDialog.add(usernameField, gbc);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        registerDialog.add(passwordLabel, gbc);
+
+        JPasswordField passwordField = new JPasswordField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        registerDialog.add(passwordField, gbc);
+
+        JButton registerButton = new JButton("Register");
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        registerDialog.add(registerButton, gbc);
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            String username = usernameField.getText();
+            char[] password = passwordField.getPassword();
+
+            hub.create_user(username, new String(password));
+            JOptionPane.showMessageDialog(registerDialog, "Successfully Registered. Please Login.", "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
+            registerDialog.setVisible(false);
+
+            // if (user != null) {
+            //     System.out.println("Registration successful");
+            //     registerDialog.setVisible(false);
+            // } else {
+            //     System.out.println("Registration failed");
+            //     JOptionPane.showMessageDialog(registerDialog, "Registration failed. Please try again.", "Registration Failed", JOptionPane.ERROR_MESSAGE);
+            // }
+            }
+        });
+
+        close_window_listener(registerDialog);
+
+        registerDialog.setVisible(true);
+        }
+
+
     private void close_window_listener(JDialog jdiag){
         jdiag.addWindowListener(new WindowAdapter() {
             @Override

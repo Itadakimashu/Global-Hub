@@ -8,7 +8,7 @@ public class Hub implements Serializable{
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Message> messages = new ArrayList<Message>();
 
-    //getter setter
+    //getters
     public ArrayList<Message> get_messages(){
         return this.messages;
     }
@@ -17,14 +17,15 @@ public class Hub implements Serializable{
         return this.users;
     }
 
+
+    //methods
     private void add_user(User User){
         this.users.add(User);
     }
     private void add_message(Message msg){
         this.messages.add(msg);
     }
-
-    //methods
+    
     public void create_user(String username, String password){
         User u = User.create_user(username,password);
         this.add_user(u);
