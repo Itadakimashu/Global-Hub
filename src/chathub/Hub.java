@@ -8,6 +8,13 @@ public class Hub implements Serializable{
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Message> messages = new ArrayList<Message>();
 
+    private User currentUser;
+
+    public Hub(){
+        this.load();
+        currentUser = null;
+    }
+
     //getters
     public ArrayList<Message> get_messages(){
         return this.messages;
@@ -15,6 +22,14 @@ public class Hub implements Serializable{
 
     public ArrayList<User> get_users(){
         return this.users;
+    }
+
+    public User get_currentUser(){
+        return this.currentUser;
+    }
+
+    public void set_currentUser(User user){
+        this.currentUser = user;
     }
 
 
@@ -25,15 +40,23 @@ public class Hub implements Serializable{
     private void add_message(Message msg){
         this.messages.add(msg);
     }
+
+    private void validate_username_exist(String username){
+        for (User u : this.users){
+            if (u.get_username().equals(username)){
+                throw new IllegalArgumentException("The username already exists");
+            }
+        }
+    }
     
-    public void create_user(String username, String password){
-        User u = User.create_user(username,password);
+    public void create_user(String username, String password,String name, String email, int age){
+        validate_username_exist(username);
+        User u = new User(username,password,name,email,age);
         this.add_user(u);
         this.save();
     }
 
     public void create_message(User user, String message){
-        //check if the user is in the users arraylist in future
         Message msg = new Message(user,message);
         this.add_message(msg);
         this.save();
@@ -41,11 +64,11 @@ public class Hub implements Serializable{
 
     public User authenticate(String username, String password){
         for (User u : this.users){
-            if (u.get_username().equals(username) && u.check_password(password)){
+            if (u.get_username().equals(username) && u.match_password(password)){
                 return u;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Invalid username or password");
     }
 
     public void save(){
@@ -55,7 +78,7 @@ public class Hub implements Serializable{
             oos.writeObject(this);
             oos.close();
             fos.close();
-            System.out.println("Chats saved");
+            // System.out.println("Chats saved");
         }
 
         catch (IOException e) {
@@ -98,6 +121,7 @@ public class Hub implements Serializable{
                 System.out.println("Error loading chats");
                 e.printStackTrace();
             }
+
         }
     }
 

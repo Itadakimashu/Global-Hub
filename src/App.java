@@ -2,31 +2,31 @@ import chathub.*;
 import GUI.*;
 
 public class App {
-    public static String state = "register";
+    public static String state = "welcome";
     public static void main(String[] args) {
         Hub GlobalHub = new Hub();
-        GlobalHub.load();
         Gui gui = new Gui();
 
-        User currentUser = null;
         while(true){
             switch (state) {
+                case "welcome":
+                    state = gui.welcome_view(GlobalHub);
+                    break;
+
                 case "login":
-                    currentUser = gui.login_user(GlobalHub);
-                    if(currentUser != null){
-                        state = "hub";
-                    }
+                    state = gui.login_user(GlobalHub);
                     break;
                 
                 case "hub":
-                    currentUser = gui.hub_view(GlobalHub,currentUser);
-                    if(currentUser == null){
-                        state = "login";
-                    }
+                    state = gui.hub_view(GlobalHub);
                     break;
                 case "register":
-                    gui.register_view(GlobalHub);
-                    state = "login";
+                    state = gui.register_view(GlobalHub);
+                    break;
+
+                case "userlist":
+                    gui.userlist_view(GlobalHub);
+                    state = "welcome";
                     break;
             
                 default:
