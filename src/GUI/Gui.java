@@ -313,7 +313,7 @@ public class Gui{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        JLabel welcomeLabel = new JLabel("Welcome to ChatHub");
+        JLabel welcomeLabel = new JLabel("Welcome to GlobalHub");
         gbc.gridx = 0;
         gbc.gridy = 0;
         welcomeDialog.add(welcomeLabel,gbc);
